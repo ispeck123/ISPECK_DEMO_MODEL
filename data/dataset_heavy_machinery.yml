@@ -1,0 +1,6 @@
+train: /content/drive/MyDrive/ispeck_derive./heavy_machinery_yolov6/dataset/images/train
+val: /content/drive/MyDrive/ispeck_derive./heavy_machinery_yolov6/dataset/images/val
+
+
+nc: 1
+names: ['Heavy_Machinery']  # class names
