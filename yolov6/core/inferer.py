@@ -20,12 +20,11 @@ from yolov6.data.datasets import LoadData
 from yolov6.utils.nms import non_max_suppression
 from yolov6.utils.torch_utils import get_model_info
 from Config import Config as cfg
-from dbconn import insert_into_event_transaction
 import uuid, datetime
 from tracker import *
 from collections import deque
 
-person_model = torch.hub.load('ultralytics/yolov5', 'yolov5m', pretrained=True)
+
 class Inferer:
     def __init__(self, source, webcam, webcam_addr, weights, device, yaml, img_size, half):
 
@@ -42,6 +41,7 @@ class Inferer:
         self.class_names = load_yaml(yaml)['names']
         self.img_size = self.check_img_size(self.img_size, s=self.stride)  # check image size
         self.half = half
+        self.person_model = torch.hub.load('ultralytics/yolov5', 'yolov5m', pretrained=True)
 
         # Switch model to deploy status
         self.model_switch(self.model.model, self.img_size)
@@ -72,7 +72,7 @@ class Inferer:
 
         LOGGER.info("Switch model to deploy modality.")
 
-    def infer(self, conf_thres, iou_thres, classes, agnostic_nms, max_det, save_dir, save_txt, save_img, hide_labels, hide_conf, view_img=True, custom_config=None):
+    def infer(self, conf_thres, iou_thres, classes, agnostic_nms, max_det, save_dir, save_txt, save_img, hide_labels, hide_conf, view_img=True):
         ''' Model Inference and results visualization '''
         vid_path, vid_writer, windows = None, None, []
         fps_calculator = CalcFPS()
@@ -165,7 +165,7 @@ class Inferer:
                     area=[(roi_x1,roi_y1),(roi_x2,roi_y2),(roi_x3,roi_y3),(roi_x4,roi_y4)]
                     cv2.polylines(img_ori,[np.array(area,np.int32)],True,(0,255,0),3)
                     # cv2.putText(img_ori,f'hm{conf}',(roi_x2,roi_y2), cv2.FONT_HERSHEY_SIMPLEX, .6, (0, 255, 200), 2,cv2.LINE_AA)
-                    results_person = person_model(img_ori)
+                    results_person = self.person_model(img_ori)
                     for index,row in results_person.pandas().xyxy[0].iterrows():
                         x11 = int(row['xmin'])
                         y11 = int(row['ymin'])
@@ -187,11 +187,6 @@ class Inferer:
                                     found_non_compliance = True
                                     #cv2.putText(img_ori,f'per : {confi}',(x11,y11), cv2.FONT_HERSHEY_SIMPLEX, .6, (0, 255, 0), 2,cv2.LINE_AA)
                    
-                        
-                    
-                 
-                 
-               
                 img_src = np.asarray(img_ori)
                 
             frame_id+=1
@@ -207,7 +202,6 @@ class Inferer:
                 x_hist_dict.clear()
                 y_hist_dict.clear() 
                             
-
                             
             if found_non_compliance and found_movement:
                 if is_first_time:
@@ -228,18 +222,7 @@ class Inferer:
                             [cv2.IMWRITE_JPEG_QUALITY, 40])
 
                 
-                insert_into_event_transaction({
-                    'site_id': custom_config.get('site_id'),
-                    'area_id': custom_config.get('area_id'),
-                    'cam_id': custom_config.get('camera_id'),
-                    'pipeline_id': custom_config.get('pipeline_id'),
-                    'class_id': custom_config.get('class_id'),
-                    'model_id': custom_config.get('model_id'),
-                    'event_type': cfg.MODEL_ALERT_CLASS_LIST[0],
-                    'bbox': torch.tensor(xyxy).tolist(),
-                    'score': conf,
-                    'filename': svg_file_name
-                })
+                
                 self.update_time = time.time()
                 update_interval_bool = False
             

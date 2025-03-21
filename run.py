@@ -6,7 +6,6 @@ import sys
 import os.path as osp
 import torch
 from Config import Config as cfg
-from dbconn import raw_query
 
 ROOT = os.getcwd()
 if str(ROOT) not in sys.path:
@@ -42,18 +41,11 @@ class Detection:
         self.ROI = cfg.MODEL_ROI
         
     def get_pipeline_details_and_run(self):
-        resp = raw_query(f"""select * from {cfg.TABLE_PIPELINE_MASTER} as pm 
-                        inner join {cfg.TABLE_CAM_MASTER} as cm 
-                        inner join {cfg.TABLE_MODEL_MASTER} as mm 
-                        inner join {cfg.TABLE_PIPELINE_CLASS_MAP} as pcm 
-                        inner join {cfg.TABLE_CLASS_MASTER} as cc 
-                        on pm.camera_id=cm.camera_id and pm.model_id=mm.model_id and pcm.pipeline_id=pm.pipeline_id and pcm.class_id=cc.class_id 
-                        where pm.pipeline_id={cfg.pipeline_id};""")
-        self.custom_config = resp[0]
+       
         if len(cfg.RTSP_URL) > 0:
             self.run(cfg.RTSP_URL)
-        else:
-            self.run(self.custom_config.get('rtsp_url'))   
+        # else:
+        #     self.run(self.custom_config.get('rtsp_url'))   
             
     def run(self,source):
         if str(source).__contains__('rtsp'):       
@@ -76,7 +68,7 @@ class Detection:
             if not osp.exists(save_txt_path):
                 os.makedirs(save_txt_path)
         inferer = Inferer(source, self.webcam, self.webcam_addr, self.weights, self.device, self.yaml, self.img_size, self.half)
-        inferer.infer(self.conf_thres, self.iou_thres, self.classes, self.agnostic_nms, self.max_det, self.save_dir, self.save_txt, not self.not_save_img, self.hide_labels, self.hide_conf, self.view_img, self.custom_config)   
+        inferer.infer(self.conf_thres, self.iou_thres, self.classes, self.agnostic_nms, self.max_det, self.save_dir, self.save_txt, not self.not_save_img, self.hide_labels, self.hide_conf, self.view_img)   
     
 
         if self.save_txt or not self.not_save_img:
@@ -86,5 +78,4 @@ class Detection:
 if __name__ == "__main__":
     I = Detection()
     I.get_pipeline_details_and_run()
-    # I.run(source="videos/PPE_Detection_Raw.mp4")
     

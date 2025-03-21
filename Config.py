@@ -1,24 +1,9 @@
 import os
 
 class Config:
-    DB_HOST = os.environ.get('DB_HOST', '')
-    DB_PORT =  int(os.environ.get('DB_PORT', ))
-    DB_USER = os.environ.get('DB_USER', '')
-    DB_PASSWORD = os.environ.get('DB_PASSWORD', '')
-    DB_SCHEMA = os.environ.get('DB_SCHEMA', '')
-
-    pipeline_id = int(os.environ.get("pipeline_id", ))
+    
+    pipeline_id = int(os.environ.get("pipeline_id", 1000 ))
     RTSP_URL = os.environ.get("RTSP_URL", "")
-
-
-    # Esentinel Table Configurations
-    TABLE_CAM_MASTER = ""
-    TABLE_CLASS_MASTER = ""
-    TABLE_MODEL_MASTER = ""
-    TABLE_OBJECT_INSIGHT = ""
-    TABLE_PIPELINE_MASTER = ""
-    TABLE_PIPELINE_CLASS_MAP = ""
-
 
     # Data View & Capture Settings 
     INSIGHTS_UPDATE_MODE_TIME_INTERVAL = int(os.environ.get("INSIGHTS_UPDATE_MODE_TIME_INTERVAL", 300)) # in seconds   ###5 min
@@ -27,8 +12,6 @@ class Config:
     SHOW_IMAGE = str(os.environ.get("SHOW_IMAGE", "no")).lower() in ("yes", "true", "t", "1")
     SAVE_INSIGHT = str(os.environ.get("SAVE_INSIGHT", "yes")).lower() in ("yes", "true", "t", "1")
 
-    
-   
     SKIP_FRAMES = int(os.environ.get('SKIP_FRAMES', 10))
     MAX_FRAMES_MOVEMENT = int(os.environ.get('MAX_FRAMES_MOVEMENT', 60))
     MAX_DIST_MOVEMENT = int(os.environ.get('MAX_DIST_MOVEMENT', 100))
@@ -40,7 +23,6 @@ class Config:
     LEFT_ROI = int(os.environ.get("LEFT_ROI", 4))
     RIGHT_ROI = int(os.environ.get("RIGHT_ROI", 4))
     
-
     # Model Weight And Class File Settings
     MODEL_WEIGHT = os.environ.get('MODEL_WEIGHT', os.path.join("weights", 'N109_Updated.pt'))
     MODEL_CLASS_YML = os.environ.get('MODEL_CLASS_YML', 'data/dataset_heavy_machinery.yml')
