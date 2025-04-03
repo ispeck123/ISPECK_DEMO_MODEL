@@ -14,7 +14,7 @@ install the requirements.txt
 
 
 **Step 2:**
-  Download the weights folder from the one drive link that mentioned above and keep it at your working directory.(custome weight file name 'N109_Updated.pt')
+  Download the weights folder from the one drive link that mentioned above and keep it at your working directory.(custom weight file name 'N109_Updated.pt')
 
 
 **Step 3:**
