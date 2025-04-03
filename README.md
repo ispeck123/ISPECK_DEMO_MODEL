@@ -9,13 +9,14 @@ The heavy machinery detection model is custom-trained to identify machinery obje
 
 Our additional logic is structured such that if a person is detected within this virtual ROI, an alert is triggered, ensuring real-time monitoring and safety compliance.all logical changes have been done at /yolov6/core/inferer.py
 
-Step1:
+**Step 1:**
 install the requirements.txt 
-step2:
-Download the weights folder from the one drive link that mentioned above and keep it at your working directory.(custome weight file name 'N109_Updated.pt')
-Step 3:
-change the configuration from the Config.py file. Add video file path at "RTSP_URL" .
-step 4 :
-run the script "run.py"
-(python run.py)
+
+**Step 2:**
+  Download the weights folder from the one drive link that mentioned above and keep it at your working directory.(custome weight file name 'N109_Updated.pt')
+**Step 3:**
+  change the configuration from the Config.py file. Add video file path at "RTSP_URL" .
+**step 4:**
+  run the script "run.py"
+  (python run.py)
 
